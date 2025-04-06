@@ -1,11 +1,17 @@
 <?php
 
-$db_host = getenv('DB_HOST');
-$db_user = getenv('DB_USER');
-$db_pass = getenv('DB_PASS');
-$db_name = getenv('DB_NAME');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
+    $page = $_GET['page'];
 
-echo $db_host . $db_user . $db_pass . $db_name;
-
+    if ($page == 'add_password') {
+        include "queryparameters/add_password.php";
+    }
+    elseif ($page == "get_password") {
+        include "queryparameters/get_password.php";
+    } else {
+        include "404.php";
+    }
 ?>
