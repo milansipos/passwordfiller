@@ -9,17 +9,30 @@
       "48": "frontend/icons/lock.png"
     },
   
-    "permissions": ["activeTab"],
+    "permissions": [
+      "http://localhost:8080/*",
+      "activeTab",
+      "storage",
+      "tabs",
+      "clipboardWrite"
+    ],
   
     "browser_action": {
       "default_icon": "frontend/icons/lock.png",
       "default_title": "Passfiller",
       "default_popup": "frontend/popup.html"
     },
-  
-    "web_accessible_resources": [
-      "beasts/frog.jpg",
-      "beasts/turtle.jpg",
-      "beasts/snake.jpg"
+
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    },
+
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js" : ["content.js"],
+        "run_at" : "document_idle"
+      }
     ]
   }

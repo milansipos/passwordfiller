@@ -1,5 +1,9 @@
 <?php
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type");
+
 $db_host = getenv('DB_HOST');
 $db_user = getenv('DB_USER');
 $db_pass = getenv('DB_PASS'); 

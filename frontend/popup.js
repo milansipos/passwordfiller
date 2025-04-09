@@ -41,33 +41,51 @@ document.getElementById("getpass").addEventListener("submit", async function(eve
 
     let formData = new FormData(this);
 
+    for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`)
+    }
+
     try {
         let response = await fetch("http://localhost:8080/index.php?page=get_password", {
             method: "POST",
             body: formData
         });
         let data = await response.text();
-        document.getElementById("textpassword").innerText = data;
-        await navigator.clipboard.writeText(data);
+
+        if(data === "No passwords found") {
+            document.getElementById("textpassword").innerText = data + " ❌";
+        } else {
+            document.getElementById("textpassword").innerText = "Copied to clipboard! ✅";
+            await navigator.clipboard.writeText(data);
+        }
     } catch(error) {
         console.error("Error:", error);
     }
+});
 
-    // fetch("http://localhost:8080/index.php?page=get_password", {
-    //     method: "POST",
-    //     body: formData
-    // })
-    // .then(response => response.text())
-    // .then(data => {
-    //     document.getElementById("textpassword").innerText = data;
-    //     console.log(data);
-    //     navigator.clipboard.writeText(data).then(function(){
-    //         console.log("copied successfully");
-    //     }), function(err) {
-    //         console.error("Could not copy text: ", err);
-    //     }
-    // })
-    // .catch(error => console.error("Error:", error));
+document.getElementById("sitepassword").addEventListener("click", async function() {
+    
+    let domain = await getDomain();
+
+    let postBody = new URLSearchParams();
+    postBody.append("url", domain);
+
+    try{
+        let response = await fetch("http://localhost:8080/index.php?page=get_password", {
+            method: "POST",
+            body: postBody
+        });
+        let data = await response.text();
+
+        if(data === "No passwords found") {
+            document.getElementById("textpassword").innerText = data + " for this site. ❌";
+        } else {
+            document.getElementById("textpassword").innerText = "Copied to clipboard! ✅";
+            await navigator.clipboard.writeText(data);
+        }
+    } catch(error) {
+        console.error("Error:", error);
+    }
 });
 
 

@@ -25,15 +25,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $onepassword = $_POST['password'];
     $password = encryptPassword($onepassword, $encryption_key);
 
-    $sql = "INSERT INTO passwords (site_url, username, passhash) VALUES (?,?,?)";
+    $sql = "SELECT COUNT(*) FROM passwords WHERE site_url = ? AND username = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $url, $username, $password);
-    if ($stmt->execute()) {
-        echo "New password succesfully added";
+    $stmt->bind_param("ss", $url, $username);
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($count > 0) {
+        echo "A password with this username was already saved.";
     } else {
-        echo "shit";
+        $sql = "INSERT INTO passwords (site_url, username, passhash) VALUES (?,?,?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sss", $url, $username, $password);
+        if ($stmt->execute()) {
+            echo "New password succesfully added";
+        } else {
+            echo "error";
+        }
     }
-    
 
 }
 ?>
