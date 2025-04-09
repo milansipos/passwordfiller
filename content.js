@@ -25,26 +25,53 @@
     }
 })();
 
-// (function() {
-//     document.querySelectorAll("input[type='password']").forEach(inputField => {
-//         inputField.addEventListener("focus", async () => {
-//             console.log("focused");
-//             let domain = window.location.hostname;
-    
-//             alert(domain);
-    
-//             browser.runtime.sendMessage(
-//                 {action: "getPassword", domain },
-//                 (response) => {
-//                     if (response.password) {
-//                         inputField.value = response.password;
-//                     } else {
-//                         console.log("no password found")
-//                     }
-//                 }
-//             )
-//         });
-//     });
-// })();
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "autoFillForm") {
+        (async function() {
+
+            let domain = window.location.hostname;
+            let loginForm = document.querySelector('form');
+        
+            if (loginForm) {
+                alert("login form found");
+            }
+        
+            try {
+                const response = await browser.runtime.sendMessage({
+                    action: "copyPassword",
+                    domain: domain
+                });
+        
+                let password = response.password;
+                
+                const response2 = await browser.runtime.sendMessage({
+                    action: "getUsername",
+                    domain: domain
+                });
+        
+                let username = response2.username;
+        
+                let usernameField = loginForm.querySelector('input[type="text"], input[type="email"]');
+                let passwordField = loginForm.querySelector('input[type="password"]');
+        
+                if(usernameField && passwordField) {
+                    alert("found the fields");
+        
+                    usernameField.value = username;
+                    passwordField.value = password;
+        
+                    //loginForm.submit();
+        
+                }
+        
+            } catch (error) {
+                alert("error: " + error);
+            }
+        })();
+    }
+});
+
+
 
 

@@ -11,6 +11,8 @@ header("Access-Control-Allow-Headers: Content-Type");
     }
     elseif ($page == "get_password") {
         include "queryparameters/get_password.php";
+    }elseif ($page == "get_username") {
+        include "queryparameters/get_username.php";
     } else {
         include "404.php";
     }

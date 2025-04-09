@@ -88,4 +88,15 @@ document.getElementById("sitepassword").addEventListener("click", async function
     }
 });
 
+// button to fill out form on website automatically
+
+document.getElementById("autofillbutton").addEventListener("click", function() {
+    browser.tabs.query({ active : true, currentWindow : true}, function(tabs) {
+        let tab = tabs[0];
+        if (tab) {
+            browser.tabs.sendMessage(tab.id, { action: "autoFillForm"});
+        }
+    });
+});
+
 

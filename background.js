@@ -25,3 +25,27 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return true;
     }
 });
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "getUsername") {
+        let domain = message.domain;
+
+        let postBody = new URLSearchParams();
+        postBody.append("url", domain);
+        
+        fetch("http://localhost:8080/index.php?page=get_username", {
+            method: "POST",
+            body: postBody
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log("this should be the username: " + data);
+            sendResponse({ username : data});
+        })
+        .catch(error => {
+            sendResponse({ error : "failed to get username"});
+        })
+
+        return true;
+    }
+})
