@@ -2,7 +2,7 @@
 (async function() {
 
     let domain = window.location.hostname;
-    alert(domain);
+    //alert(domain);
 
     try {
         const response = await browser.runtime.sendMessage({
@@ -10,18 +10,18 @@
             domain: domain
         });
 
-        alert("response: " + JSON.stringify(response));
-        alert("respass: " + response.password);
+       // alert("response: " + JSON.stringify(response));
+       // alert("respass: " + response.password);
         console.log(response);
 
         if (response && response.password) {
             await navigator.clipboard.writeText(response.password);
-            alert("password copied");
+         //   alert("password copied");
         } else {
-            alert("no password found");
+         //   alert("no password found");
         }
     } catch (error) {
-        alert("error: " + error);
+      //  alert("error: " + error);
     }
 })();
 
@@ -51,16 +51,28 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 });
         
                 let username = response2.username;
+
+                alert(username);
         
-                let usernameField = loginForm.querySelector('input[type="text"], input[type="email"]');
-                let passwordField = loginForm.querySelector('input[type="password"]');
+                let usernameField = document.querySelector('input[type="text"]');
+                let emailField = document.querySelector('input[type="email"]');
+                let passwordField = document.querySelector('input[type="password"]');
+
+                let userField = usernameField ? usernameField : emailField;
+
+                alert(usernameField ? usernameField : "No username field");
+                alert(passwordField ? passwordField : "No password field");
+
         
                 if(usernameField && passwordField) {
                     alert("found the fields");
         
-                    usernameField.value = username;
-                    passwordField.value = password;
+                    // usernameField.value = username;
+                    // passwordField.value = password;
         
+                    setNativeValue(userField, username);
+                    setNativeValue(passwordField, password);
+
                     //loginForm.submit();
         
                 }
@@ -72,6 +84,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-
-
-
+// if other framework
+function setNativeValue(element, value) {
+    const lastValue = element.value;
+    element.value = value;
+    const event = new Event('input', { bubbles: true });
+    event.simulated = true;
+    // Hack for React 15
+    const tracker = element._valueTracker;
+    if (tracker) {
+        tracker.setValue(lastValue);
+    }
+    element.dispatchEvent(event);
+}

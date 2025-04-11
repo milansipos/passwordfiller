@@ -2,6 +2,10 @@
 console.log("loaded")
 
 
+document.getElementById("viewPasswords").addEventListener("click", () => {
+    window.location.href = "passwords.html";
+})
+
 
 document.getElementById("myform").addEventListener("submit", async function(event) {
     event.preventDefault();
