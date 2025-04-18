@@ -97,8 +97,10 @@ document.getElementById("sitepassword").addEventListener("click", async function
 document.getElementById("autofillbutton").addEventListener("click", function() {
     browser.tabs.query({ active : true, currentWindow : true}, function(tabs) {
         let tab = tabs[0];
+
+        let autologin = document.getElementById("fillcheckbox").checked;
         if (tab) {
-            browser.tabs.sendMessage(tab.id, { action: "autoFillForm"});
+            browser.tabs.sendMessage(tab.id, { action: "autoFillForm", autologin: autologin});
         }
     });
 });

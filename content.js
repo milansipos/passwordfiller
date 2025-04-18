@@ -34,7 +34,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             let loginForm = document.querySelector('form');
         
             if (loginForm) {
-                alert("login form found");
+                //alert("login form found");
             }
         
             try {
@@ -60,20 +60,22 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
                 let userField = usernameField ? usernameField : emailField;
 
-                alert(usernameField ? usernameField : "No username field");
-                alert(passwordField ? passwordField : "No password field");
+                //alert(usernameField ? usernameField : "No username field");
+                //alert(passwordField ? passwordField : "No password field");
 
         
                 if(usernameField && passwordField) {
-                    alert("found the fields");
+                    //alert("found the fields");
         
                     // usernameField.value = username;
                     // passwordField.value = password;
         
-                    setNativeValue(userField, username);
-                    setNativeValue(passwordField, password);
+                    typeInField(userField, username);
+                    typeInField(passwordField, password);
 
-                    //loginForm.submit();
+                    if (message.autologin) {
+                        loginForm.submit();
+                    }
         
                 }
         
@@ -96,4 +98,13 @@ function setNativeValue(element, value) {
         tracker.setValue(lastValue);
     }
     element.dispatchEvent(event);
+}
+
+//simulate typing
+function typeInField(field, value) {
+    setNativeValue(field, value);
+
+    field.dispatchEvent(new Event("input", {bubbles : true}));
+    field.dispatchEvent(new Event("change", {bubbles : true}));
+
 }
